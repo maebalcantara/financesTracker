@@ -1,2 +1,2 @@
-# financesTracker
-Finances Tracker Mini-Project
+# Finances Tracker
+My second mini project XD
