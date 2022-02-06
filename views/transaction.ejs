@@ -1,0 +1,93 @@
+<%- include("partials/header") -%>
+
+<div style="width:20%;">
+  <table class="table transaction-table-orderdetails">
+    <thead>
+      <tr>
+        <th colspan="2">ORDER DETAILS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Transaction</th>
+        <td style="text-transform: uppercase;">
+          <!-- Buy Option -->
+          <div style="display: inline;">
+            <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()">
+            <label for="transaction-buy">Buy</label>
+          </div>
+          <!-- Sell Option -->
+          <div style="display: inline;">
+            <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()">
+            <label for="transaction-buy">Sell</label>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stock Code</th>
+
+        <td> <input style="text-transform: uppercase;" value="<%=stockCode%>" name="transactionStockCode" autocomplete="off" required/></td>
+      </tr>
+      <tr>
+        <th scope="row"># of shares</th>
+        <td><input type="text" name="transactionNumOfShares" id="transactionNumOfShares" onChange="onChange()" autocomplete="off" required/></td>
+      </tr>
+      <tr>
+        <th scope="row">Price</th>
+        <td><input type="text" name="transactionPrice" id="transactionPrice" onChange="onChange()" autocomplete="off" required/></td>
+      </tr>
+      <tr>
+        <th scope="row">Net</th>
+        <td id="transactionTotalPrice">0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- Show existing Stocks: -->
+<div style="width:20%;">
+  <table id="tableTransactionCurrentShares" class="table tableTransactionCurrentShares" ">
+    <thead>
+      <tr>
+        <th colspan="2" id="transactionTransactionChoice" scope="row"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th id="transactionCurrentSharesTitle1" scope="row"></th>
+        <td id="transactionCurrentSharesCurrentStocks"></td>
+      </tr>
+      <tr>
+        <th id="transactionCurrentSharesTitle2" scope="row"></th>
+        <td id="transactionCurrentSharesAdjustedStocks"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<a href="/home"><button class="button">Go Home, you're drunk!</button></a>
+<script>
+  function onChange(){
+    var currentShares = parseInt(<%=totalShares%>);
+    var price = document.getElementById("transactionPrice").value;
+    var stocks = parseInt(document.getElementById("transactionNumOfShares").value);
+    var total = price * stocks;
+    document.getElementById("transactionTotalPrice").innerHTML = total;
+
+
+    var adjustedShares = currentShares + stocks;
+    document.getElementById("transactionCurrentSharesAdjustedStocks").innerHTML = adjustedShares;
+  }
+  function onClick(){
+    // document.getElementById("tableTransactionCurrentShares").style.display="";
+
+    var transactionChoice = document.getElementsByName('transactionChoice');
+    for(i = 0; i < transactionChoice.length; i++) {
+      if(transactionChoice[i].checked)
+        document.getElementById("transactionTransactionChoice").innerHTML = transactionChoice[i].value + " ORDER";
+        document.getElementById("transactionCurrentSharesTitle1").innerHTML = "Current Shares";
+        document.getElementById("transactionCurrentSharesTitle2").innerHTML = "Adjusted Shares";
+        document.getElementById("transactionCurrentSharesCurrentStocks").innerHTML = <%=totalShares%>;
+    }
+  }
+</script>
+<%- include("partials/footer") -%>

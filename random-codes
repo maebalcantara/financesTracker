@@ -1,0 +1,67 @@
+To-Do:
+-Account DB
+-When Selling, they will choose bet. existing stocks.. (pop up? or new page?)
+-Accepts input for sell.. *
+  -with computation (total and less sa existing stock)
+
+Gain/Loss Computation: (Purchase/Sell Price - Original Price) / Purchase or Sell Price Price *100
+
+Goal:
+With Chart of progress..
+with log in..
+json file of stock names... (stock name, board lot)
+Add shares to current trades
+  Infos:
+    1. Stock Code
+    2. # of current shares
+    3. Purchase price
+    4.
+Onlu number is allowed for input in # of shares, price, etc. ...
+User will choose a transaction first, if buy, show yung mga input, else, choose bet. existing stocks
+green if + red if - buy/sell
+
+<% let stockCodeValue = !(checker) ? stockCode :  "maecutie" %>
+
+<% let stockCodeValue = "" %>
+<% let checker = true %>
+<% if (stockCode == null){ %>
+  <% stockCodeValue = "undefined" %>
+<%} else{%>
+  <% stockCodeValue = stockCode %>
+<% } %><!-- <form action="/test" method="post">
+  <input type="text" name="testMongo"/>
+  <button type="submit">Submit Beh</button>
+</form> -->
+
+
+<!-- Start of Sell Modal -->
+<!-- <div class="modal fade" id="sellModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+     <div class="modal-body">
+
+     </div>
+
+  </div>
+ </div>
+</div> -->
+<!-- End of Sell Modal -->
+
+<!-- <button id="purchasePrice" onclick="sellOnClick(event)" value="test Button" style="border:0; background: none; color:red;">gogo</button>
+<a id="mae" href="#" stock="stock code" onclick="test()">Test A</a>
+<script>
+  function sellOnClick(){
+    const test = event.target.value;
+    var price = document.getElementById("purchasePrice").value;
+    alert(test)
+  }
+
+  function test(){
+    var atest = document.getElementById("mae").getAttribute("stock");
+    alert(atest)
+    alert("I'm working")
+  }
+</script> -->

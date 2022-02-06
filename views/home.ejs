@@ -1,0 +1,115 @@
+<%- include("partials/header") -%>
+
+<div class="div-buy container-fluid">
+  <form action="/home" method="post">
+    <!-- To Add: Choose between existing trades -->
+    <label for="sampleCapital"><strong>Current Captital:</strong></label>
+    <span><%=sampleCapital%></span>
+    <!-- Stock Code -->
+    <br />
+    <label for="stockCode"> <strong>Stock Code:</strong></label>
+    <input type="text" name="stockCode" autocomplete="off" required /> <br />
+    <!-- Market Price -->
+    <label for="marketPrice"> <strong>Market Price:</strong></label>
+    <input type="text" name="marketPrice" id="marketPrice" onChange="onChange()" autocomplete="off" required /> <br />
+    <!-- Purchase Price -->
+    <label for="purchasePrice"> <strong>Purchase Price:</strong></label>
+    <input type="text" name="purchasePrice" id="purchasePrice" onChange="onChange()" autocomplete="off" required /> <br />
+    <!-- Number of Shares -->
+    <label for="totalShares"> <strong>Total Shares:</strong></label>
+    <input type="text" name="totalShares" id="totalShares" onChange="onChange()" autocomplete="off" required "/> <br  />
+
+      <strong>Total Price: </strong><span id="totalPrice">0</span>
+    <button type="submit">Enter Info</button>
+  </form>
+</div>
+
+<!-- Portfolio Table -->
+<div class="div-portfolio container-fluid">
+  <h3>Portfolio Table</h3>
+  <table class="table-portfolio">
+    <tr>
+      <th>Action</th>
+      <th>Stock Code</th>
+      <th>Market Price</th>
+      <th>Purchase Price</th>
+      <th>Number of Shares</th>
+      <th>Price</th>
+      <th>Gain/Loss (Percent)</th>
+      <th>Gain/Loss (Monetary)</th>
+    </tr>
+
+    <% stockEntryLoop.forEach((value, index) => { %>
+    <tr>
+      <td>
+        <form action="/transaction" method="post">
+          <!-- Buy -->
+          <button class="button-buy" type="submit" value="<%=value.stockCode%>" name="sellStockCode">BUY </button> |
+          <!-- Sell -->
+          <button class="button-sell" type="submit" value="<%=value.stockCode%>" name="sellStockCode">SELL</button>
+        </form>
+      </td>
+      <td style="text-transform: uppercase;"> <%= value.stockCode %> </td>
+      <td> P <%= value.marketPrice %> </td>
+      <td> P <%= value.purchasePrice %> </td>
+      <td> <%= value.totalShares %> </td>
+      <td> P <%= value.totalPrice %> </td>
+      <td> <%= value.glPercentage %> % </td>
+      <td> P <%= value.glMonetary %> </td>
+    </tr>
+    <% }) %>
+    <tr>
+      <td colspan="5"><strong>Total:</strong></td>
+      <td><strong>P <%=finalPrice%></strong></td>
+      <td><strong><%=finalGLPercentage%> %</strong> </td>
+      <td><strong>P <%=finalGLMonetary%></strong></td>
+    </tr>
+    <tr>
+      <td colspan="5"><strong>Total + Cash</strong></td>
+      <td colspan="4"><strong>P <%=finalCapital%></strong></td>
+    </tr>
+  </table>
+</div>
+
+<!-- History Table -->
+<div class="div-history container-fluid">
+  <h3>History Table</h3>
+  <table class="table-history">
+    <tr>
+      <th>Date Posted</th>
+      <th>Stock Code</th>
+      <th>Action</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+    <% historyEntryLoop.forEach((value) => { %>
+    <tr>
+      <td><%=value.datePosted%></td>
+      <td><%=value.stockCode%></td>
+      <td><%=value.action%></td>
+      <td><%=value.quantity%></td>
+      <td><%=value.price%></td>
+      <td><%=value.total%></td>
+    </tr>
+    <% }) %>
+  </table>
+</div>
+
+<script>
+  // Get Calculation
+  function onChange() {
+    var price = document.getElementById("purchasePrice").value;
+    var stocks = document.getElementById("totalShares").value;
+    var total = price * stocks;
+    document.getElementById("totalPrice").innerHTML = total;
+  }
+
+  function sellOnClick() {
+    var atest = document.getElementById("0").getAttribute("index");
+    alert(atest)
+    // alert("I'm working")
+  }
+</script>
+
+<%- include("partials/footer") -%>

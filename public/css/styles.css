@@ -1,0 +1,30 @@
+/* ELEMENTS */
+/* body {
+  background: purple;
+} */
+table, th, td {
+  border: 1px solid black;
+}
+/* CLASSES */
+.div-history{
+
+}
+
+.div-buy{
+
+}
+
+.button-buy{
+  border:none;
+  background:
+  none; color:green;
+  display: inline;
+}
+
+.button-sell{
+  border:none;
+  background:
+  none; color:red;
+  display: inline;
+}
+/* ID */
