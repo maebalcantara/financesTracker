@@ -13,7 +13,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-const stockCode="test"
 let sampleCapital = 100000;
 var today = new Date();
 var date = today.toLocaleString('default', { month: 'long' }) + ' ' + today.getDate() + ' '+ today.getFullYear() + ', ' + today.getHours() + ":" + today.getMinutes();
@@ -49,7 +48,7 @@ app.get("/home", function(req, res) {
   let finalPrice = 0;
   let finalGLPercentage = 0;
   let finalGLMonetary = 0;
-
+  
   Stock.find({}, function(err, stockItem) {
     History.find({}, function(err, historyItem){
 
@@ -79,16 +78,15 @@ app.get("/home", function(req, res) {
 });
 
 app.post("/home", function(req, res) {
-  stockCode = req.body.stockCode;
-  const purchasePrice = parseFloat(req.body.purchasePrice).toFixed(2);
-  const marketPrice = parseFloat(req.body.marketPrice).toFixed(2);
-  const totalShares = parseFloat(req.body.totalShares);
-  const totalPrice = parseFloat(purchasePrice * totalShares).toFixed(2);
-  const glPercentage = ((marketPrice - purchasePrice)/purchasePrice * 100).toFixed(2)
-  const glMonetary = parseFloat((totalPrice/100)*glPercentage).toFixed(2)
+  let stockCode = req.body.stockCode;
+  let purchasePrice = parseFloat(req.body.purchasePrice).toFixed(2);
+  let marketPrice = parseFloat(req.body.marketPrice).toFixed(2);
+  let totalSharesVar = parseFloat(req.body.totalShares);
+  let totalPrice = parseFloat(purchasePrice * totalSharesVar).toFixed(2);
+  let glPercentage = ((marketPrice - purchasePrice)/purchasePrice * 100).toFixed(2)
+  let glMonetary = parseFloat((totalPrice/100)*glPercentage).toFixed(2)
 
-
-  // Filter if stock code already exists on DB.
+    // Filter if stock code already exists on DB.
   Stock.findOne({stockCode: stockCode}, function(err, foundStock){
     if(!err){
       //Stock not found - add new stock
@@ -97,7 +95,7 @@ app.post("/home", function(req, res) {
           stockCode: stockCode,
           marketPrice: marketPrice,
           purchasePrice: purchasePrice,
-          totalShares: totalShares,
+          totalShares: totalSharesVar,
           totalPrice: totalPrice,
           glPercentage: glPercentage,
           glMonetary: glMonetary
@@ -109,7 +107,7 @@ app.post("/home", function(req, res) {
           datePosted: date,
           stockCode: stockCode,
           action: 'Buy',
-          quantity: totalShares,
+          quantity: totalSharesVar,
           price: purchasePrice,
           total: totalPrice
         });
@@ -133,7 +131,7 @@ app.post("/home", function(req, res) {
           datePosted: date,
           stockCode: stockCode,
           action: 'Append',
-          quantity: totalShares,
+          quantity: totalSharesVar,
           price: purchasePrice,
           total: totalPrice
         });
@@ -165,17 +163,48 @@ app.post("/transaction", function(req,res){
       if(foundStock){
         res.render("transaction.ejs", {
           stockCode: foundStock.stockCode,
-          sampleCapital: "50000",
+          sampleCapital: sampleCapital,
           totalShares: foundStock.totalShares
         });
       }
     }
   });
-  // console.log(sellStockCode)
-  // res.redirect("/sell");
-  //loop through Stock DB
-  // console.log(test);
+
+  //Transaction Post
+  let transactionNumOfShares = parseInt(req.body.transactionNumOfShares);
+  let transactionStockCode = req.body.transactionStockCode;
+  let transactionChoice = req.body.transactionChoice;
+  if (transactionStockCode != undefined) {
+    Stock.findOne({stockCode: transactionStockCode}, function(err, foundStock){
+      if(!err){
+        if(foundStock){
+          Stock.updateOne({stockCode: transactionStockCode},{$set: {totalShares: transactionNumOfShares}}, function(err){
+            if(err){
+              console.log(err)
+            }
+            else{
+              res.redirect("/home")
+            }
+          });
+        }
+        else{
+          if(transactionChoice.includes("SELL")){
+            console.log("Stock doesn't exist! Nothing to sell!");
+          res.redirect("/transaction")
+          }
+          else if(transactionChoice.includes("BUY")){
+            //To-Do: 2/8
+            //Add new data to history and update stock
+          }
+        }
+      }
+    });
+  }
 });
+
+
+
+
 // test area
 // app.get("/test", function(req,res) {
 //   res.render("test.ejs")
