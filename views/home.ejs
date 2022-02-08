@@ -8,7 +8,7 @@
     <!-- Stock Code -->
     <br />
     <label for="stockCode"> <strong>Stock Code:</strong></label>
-    <input type="text" name="stockCode" autocomplete="off" required /> <br />
+    <input style="text-transform: uppercase;" type="text" name="stockCode" autocomplete="off" required /> <br />
     <!-- Market Price -->
     <label for="marketPrice"> <strong>Market Price:</strong></label>
     <input type="text" name="marketPrice" id="marketPrice" onChange="onChange()" autocomplete="off" required /> <br />
@@ -34,7 +34,7 @@
       <th>Market Price</th>
       <th>Purchase Price</th>
       <th>Number of Shares</th>
-      <th>Price</th>
+      <th>Total Price</th>
       <th>Gain/Loss (Percent)</th>
       <th>Gain/Loss (Monetary)</th>
     </tr>
@@ -86,7 +86,7 @@
     <% historyEntryLoop.forEach((value) => { %>
     <tr>
       <td><%=value.datePosted%></td>
-      <td><%=value.stockCode%></td>
+      <td style="text-transform: uppercase;"><%=value.stockCode%></td>
       <td><%=value.action%></td>
       <td><%=value.quantity%></td>
       <td><%=value.price%></td>
@@ -105,10 +105,10 @@
     document.getElementById("totalPrice").innerHTML = total;
   }
 
-  function sellOnClick() {
-    var atest = document.getElementById("0").getAttribute("index");
+  function tryClick() {
+    var atest = document.getElementById("idBuy").getAttribute("test");
     alert(atest)
-    // alert("I'm working")
+    
   }
 </script>
 

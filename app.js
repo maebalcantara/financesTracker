@@ -42,6 +42,7 @@ const historySchema = new mongoose.Schema({
   total: Number
 });
 
+//To-do 2/9, set up account DB
 const History = new mongoose.model("History", historySchema);
 //Home
 app.get("/home", function(req, res) {
@@ -146,7 +147,7 @@ app.post("/home", function(req, res) {
 
 });
 
-//Sell
+//Transaction
 app.get("/transaction", function(req, res){
   res.render("transaction.ejs", {
     stockCode: "",
@@ -157,6 +158,7 @@ app.get("/transaction", function(req, res){
 
 app.post("/transaction", function(req,res){
   const sellStockCode = req.body.sellStockCode;
+  console.log(req.body);
   Stock.findOne({stockCode: sellStockCode}, function(err, foundStock){
     if (!err){
       //stock is found
@@ -174,27 +176,66 @@ app.post("/transaction", function(req,res){
   let transactionNumOfShares = parseInt(req.body.transactionNumOfShares);
   let transactionStockCode = req.body.transactionStockCode;
   let transactionChoice = req.body.transactionChoice;
+  let transactionMarketPrice = parseFloat(req.body.transactionMarketPrice).toFixed(2);
+  let transactionPrice = parseFloat(req.body.transactionPrice).toFixed(2);
+
+  //Add computation for total price, gl percentage, gl monetary
+  let transactionTotalPrice = transactionNumOfShares * transactionPrice;
+  let transactionGlPercentage =  ((transactionMarketPrice - transactionPrice)/transactionPrice * 100).toFixed(2);
+  let transactionGlMonetary = parseFloat((transactionTotalPrice/100)*transactionGlPercentage).toFixed(2)
   if (transactionStockCode != undefined) {
     Stock.findOne({stockCode: transactionStockCode}, function(err, foundStock){
       if(!err){
+        //Stock exists
         if(foundStock){
-          Stock.updateOne({stockCode: transactionStockCode},{$set: {totalShares: transactionNumOfShares}}, function(err){
+          Stock.updateOne({stockCode: transactionStockCode},{$set: {totalShares: transactionNumOfShares, marketPrice:transactionMarketPrice, purchasePrice:transactionPrice, totalPrice: transactionTotalPrice, glPercentage: transactionGlPercentage, glMonetary: transactionGlMonetary}}, function(err){
             if(err){
               console.log(err)
             }
             else{
+              //Add new data to history; 
+              const history = new History({
+                datePosted: date,
+                stockCode: transactionStockCode,
+                action: transactionChoice,
+                quantity: transactionNumOfShares,
+                price: transactionPrice,
+                total: transactionTotalPrice
+              });
+              history.save();
               res.redirect("/home")
             }
           });
         }
+        //Stock doesn't exist
         else{
           if(transactionChoice.includes("SELL")){
-            console.log("Stock doesn't exist! Nothing to sell!");
-          res.redirect("/transaction")
+            res.redirect("/transaction")
           }
           else if(transactionChoice.includes("BUY")){
-            //To-Do: 2/8
-            //Add new data to history and update stock
+            //Add new data to stocks;
+            const stock = new Stock({
+              stockCode: transactionStockCode,
+              marketPrice: transactionMarketPrice,
+              purchasePrice: transactionPrice,
+              totalShares: transactionNumOfShares,
+              totalPrice: transactionTotalPrice,
+              glPercentage: transactionGlPercentage,
+              glMonetary: transactionGlMonetary
+            });
+            stock.save();
+
+            //Add new data to history; 
+            const history = new History({
+              datePosted: date,
+              stockCode: transactionStockCode,
+              action: transactionChoice,
+              quantity: transactionNumOfShares,
+              price: transactionPrice,
+              total: transactionTotalPrice
+            });
+            history.save();
+            res.redirect("/home");
           }
         }
       }
