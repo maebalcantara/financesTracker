@@ -19,6 +19,8 @@ Add shares to current trades
 Onlu number is allowed for input in # of shares, price, etc. ...
 User will choose a transaction first, if buy, show yung mga input, else, choose bet. existing stocks
 green if + red if - buy/sell
+encrypt pw..
+username only lowercase
 
 To Do Today: 
 -Set up form for submit sa computation

@@ -1,0 +1,13 @@
+<%- include("partials/header") -%>
+
+<form action="/home" method="post">
+    <label for="loginUsername"> <strong>Username:</strong></label>
+    <input type="text" name="loginUsername" autocomplete="off" required /> <br />
+<!--      
+    <label for="loginPassword"> <strong>Password:</strong></label>
+    <input type="password" minlength="6" name="loginPassword" autocomplete="off" required /> <br /> -->
+
+    <button class="btn btn-primary" type="submit">Log In</button>
+</form>
+
+<%- include("partials/footer") -%>

@@ -71,30 +71,7 @@
   </table>
 </div>
 
-<!-- History Table -->
-<div class="div-history container-fluid">
-  <h3>History Table</h3>
-  <table class="table-history">
-    <tr>
-      <th>Date Posted</th>
-      <th>Stock Code</th>
-      <th>Action</th>
-      <th>Quantity</th>
-      <th>Price</th>
-      <th>Total</th>
-    </tr>
-    <% historyEntryLoop.forEach((value) => { %>
-    <tr>
-      <td><%=value.datePosted%></td>
-      <td style="text-transform: uppercase;"><%=value.stockCode%></td>
-      <td><%=value.action%></td>
-      <td><%=value.quantity%></td>
-      <td><%=value.price%></td>
-      <td><%=value.total%></td>
-    </tr>
-    <% }) %>
-  </table>
-</div>
+
 
 <script>
   // Get Calculation
