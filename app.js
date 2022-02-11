@@ -97,11 +97,11 @@ app.post("/home", function(req, res) {
   let finalCapital = 0;
   //Home Purchase
   let stockCode = req.body.stockCode;
-  let purchasePrice = parseFloat(req.body.purchasePrice).toFixed(2);
-  let marketPrice = parseFloat(req.body.marketPrice).toFixed(2);
+  let purchasePrice = parseFloat(req.body.purchasePrice);
+  let marketPrice = parseFloat(req.body.marketPrice);
   let totalSharesVar = parseFloat(req.body.totalShares);
   let totalPrice = parseFloat(purchasePrice * totalSharesVar).toFixed(2);
-  let glPercentage = ((marketPrice - purchasePrice)/purchasePrice * 100).toFixed(2)
+  let glPercentage = parseFloat((marketPrice - purchasePrice)/purchasePrice * 100).toFixed(2)
   let glMonetary = parseFloat((totalPrice/100)*glPercentage).toFixed(2)
   
   //From Login
@@ -116,7 +116,7 @@ app.post("/home", function(req, res) {
       });
       
       finalCapital = account.capital - finalPrice;
-      //Update capital..
+     
       Account.updateOne({username: loginUsername}, {$set: {capital: finalCapital}}, function(err){
         if(err){
            console.log(err)
@@ -127,7 +127,6 @@ app.post("/home", function(req, res) {
         if(account){
           res.render("home.ejs", 
           {stockEntryLoop: account.stocks,
-          sampleCapital: finalCapital,
           finalPrice: finalPrice,
           finalGLPercentage : finalGLPercentage,
           finalGLMonetary: finalGLMonetary,
@@ -143,76 +142,103 @@ app.post("/home", function(req, res) {
     // Filter if stock code already exists on DB.
     Account.findOne({username: loginUsername}, function(err, accountFoundStock){
     if(!err){
-      // Stock not found - add new stock
       if(accountFoundStock){
-        const stock = ({
-          stockCode: stockCode,
-          marketPrice: marketPrice,
-          purchasePrice: purchasePrice,
-          totalShares: totalSharesVar,
-          totalPrice: totalPrice,
-          glPercentage: glPercentage,
-          glMonetary: glMonetary
-        });
-        accountFoundStock.stocks.push(stock)
+        const foundStock = accountFoundStock.stocks.find(stock => stock.stockCode === stockCode);
+        //Filter if stock is not found.
+        if (!foundStock){
+          const stock = ({
+            stockCode: stockCode,
+            marketPrice: marketPrice,
+            purchasePrice: purchasePrice,
+            totalShares: totalSharesVar,
+            totalPrice: totalPrice,
+            glPercentage: glPercentage,
+            glMonetary: glMonetary
+          });
+          accountFoundStock.stocks.push(stock);
+          
+          const history = ({
+            datePosted: date,
+            stockCode: stockCode,
+            action: 'Buy',
+            quantity: totalSharesVar,
+            price: purchasePrice,
+            total: totalPrice
+          });
+          accountFoundStock.history.push(history);
+          accountFoundStock.save();
+  
+          accountFoundStock.stocks.map((accountStock) => {
+            finalPrice = finalPrice + accountStock.totalPrice
+            finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+            finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
+          });
+          finalCapital = accountFoundStock.capital - finalPrice;
+   
+          res.render("home.ejs", 
+          {stockEntryLoop: accountFoundStock.stocks,
+          finalPrice: finalPrice,
+          finalGLPercentage : finalGLPercentage,
+          finalGLMonetary: finalGLMonetary,
+          finalCapital: finalCapital,
+          loginUsername: loginUsername
+          });
+        }
+        //Filter if stock is found.
+        else{
+          //To do 2/12 - test run update.. and transaction .. balik yung hsitory table ..create sign up when everything is good.
+          const foundStock = accountFoundStock.stocks.find(stock => stock.stockCode == stockCode);
+          const currentMarketPrice = foundStock.marketPrice;
+          const newMarketPrice = currentMarketPrice + marketPrice;
+
+          const currentPurchasePrice = foundStock.purchasePrice;
+          const newPurchasePrice = currentPurchasePrice + purchasePrice;
+
+          const currentTotalShares = foundStock.totalShares;
+          const newTotalShares = currentTotalShares + totalSharesVar;
+     
+          //Update History table
+          const history = ({
+            datePosted: date,
+            stockCode: stockCode,
+            action: 'Append',
+            quantity: totalSharesVar,
+            price: purchasePrice,
+            total: totalPrice
+          });
+          accountFoundStock.history.push(history);
         
-        const history = ({
-          datePosted: date,
-          stockCode: stockCode,
-          action: 'Buy',
-          quantity: totalSharesVar,
-          price: purchasePrice,
-          total: totalPrice
-        });
-        accountFoundStock.history.push(history);
-        accountFoundStock.save();
+          accountFoundStock.stocks.map((accountStock) => {
+            finalPrice = finalPrice + accountStock.totalPrice
+            finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+            finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
+          });
+          finalCapital = accountFoundStock.capital - finalPrice;
+          
+          Account.updateOne({username: loginUsername, "stocks.stockCode" : stockCode}, {'$set' : {'stocks.$.totalShares' : newTotalShares, 'stocks.$.purchasePrice' : newPurchasePrice, 'stocks.$.marketPrice' : newMarketPrice}}, function(err){
+          });
+          accountFoundStock.save();
 
-        //To do 2-11: finalprice, finalCapital..
-        res.render("home.ejs", 
-        {stockEntryLoop: accountFoundStock.stocks,
-        sampleCapital: accountFoundStock.capital,
-        finalPrice: finalPrice,
-        finalGLPercentage : finalGLPercentage,
-        finalGLMonetary: finalGLMonetary,
-        finalCapital: finalCapital,
-        loginUsername: loginUsername
-        });
+          res.render("home.ejs", {
+          stockEntryLoop: accountFoundStock.stocks,
+          finalPrice: finalPrice,
+          finalGLPercentage : finalGLPercentage,
+          finalGLMonetary: finalGLMonetary,
+          finalCapital: finalCapital,
+          loginUsername: loginUsername
+          });
+          }
       }
-      // Stock already exists
-      // else{
-        // const currentTotalShares = foundStock.totalShares;
-        // const newTotalShares = currentTotalShares + totalShares;
-
-        // //To Do: change logic sa kung anong values yung ma u-update when appending existing shares
-        // Stock.updateOne({stockCode: stockCode},{$set: {totalShares: newTotalShares}}, function(err){
-        //   if(err){
-        //     console.log(err)
-        //   }
-        // });
-
-        // //Update History table
-        // const history = new History({
-        //   datePosted: date,
-        //   stockCode: stockCode,
-        //   action: 'Append',
-        //   quantity: totalSharesVar,
-        //   price: purchasePrice,
-        //   total: totalPrice
-        // });
-        // history.save();
-        // res.redirect("/home");
-  //       console.log("stock found")
-      // }
+      else{
+        console.log(loginUsername)      
+      }
     }
+    //Error
     else{
-      console.log("Account doesn't exist")
+      console.log(err)
     }
-  // console.log(accountFoundStock)
   });
   }
-  
-   
-  
 });
 
 //Transaction
@@ -331,14 +357,25 @@ app.get("/test", function(req,res) {
   //     // console.log(arrayItem.stocks[0].stockCode)
   //   })
   // });
+  
 
-  // const account = new Account({
-  //   username: "Armin",
-  //   password: 654321,
-  //   capital: 1000,
-  //   stocks: testArrayObject
-  // });
-  // account.save();
+  const stocks = ({
+    stockCode: "scc",
+    purchasePrice: 1,
+    marketPrice: 1,
+    totalShares: 2,
+    totalPrice: 2,
+    glPercentage: 2,
+    glMonetary: 2
+  });
+
+  const account = new Account({
+    username: "armin",
+    password: 654321,
+    capital: 100000,
+    stocks: stocks
+  });
+  account.save();
 });
 
 app.post("/test", function(req,res){
