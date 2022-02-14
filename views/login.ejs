@@ -1,13 +1,33 @@
 <%- include("partials/header") -%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h3>User Login</h3>
+      <form action="/test" method="post">
+        <label for="loginUsername"> <strong>Username:</strong></label>
+        <input type="text" name="loginUsername" autocomplete="off" required /> <br />
+             
+        <label for="loginPassword"> <strong>Password:</strong></label>
+        <input type="password" minlength="6" name="loginPassword" autocomplete="off" required /> <br />
 
-<form action="/home" method="post">
-    <label for="loginUsername"> <strong>Username:</strong></label>
-    <input type="text" name="loginUsername" autocomplete="off" required /> <br />
-<!--      
-    <label for="loginPassword"> <strong>Password:</strong></label>
-    <input type="password" minlength="6" name="loginPassword" autocomplete="off" required /> <br /> -->
+        <button class="btn btn-primary" type="submit">Log In</button>
+       </form>
+    </div>
+    <div class="col">
+      <form>
+        <h3>Create New Account</h3>
+        <label for="loginCreateUsername"> <strong>Username:</strong></label>
+        <input type="text" name="loginCreateUsername" autocomplete="off" required /> <br />
+             
+        <label for="loginCreatePassword"> <strong>Password:</strong></label>
+        <input type="password" minlength="6" name="loginCreatePassword" autocomplete="off" required /> <br />
 
-    <button class="btn btn-primary" type="submit">Log In</button>
-</form>
+        <button class="btn btn-primary" type="submit">Create Account</button>
+      </form>    
+    </div>
+  </div>
+</div>
+
+
 
 <%- include("partials/footer") -%>

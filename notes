@@ -21,27 +21,12 @@ User will choose a transaction first, if buy, show yung mga input, else, choose 
 green if + red if - buy/sell
 encrypt pw..
 username only lowercase
-
+auto suggest sa /transaction pag nag enter ng code..
+kapag mali yung username, go back sa /home
 To Do Today: 
 -Set up form for submit sa computation
 
 
 --
-
-let accountFoundStock=[{"onetest": "one", "stocks" : [{"stockCode": "scc"}, {"stockCode": "dmc"}]}];
-
-foundStock = accountFoundStock.map((stock) => {
-    
-    nestedArray= stock.stocks.map((nest, index) => {
-        
-        if (nest.stockCode === 'scc'){
-         accountFoundStock.stocks[index].stockCode = "mae test"
-       
-        }
-        
-   
-    })
-   console.log(accountFoundStock)
-})
-
-
+ISSUE:
+kapag wrong password nag sstop yung run

@@ -122,9 +122,9 @@
     for (i = 0; i < transactionChoice.length; i++) {
       if (transactionChoice[i].checked)
         document.getElementById("transactionTransactionChoice").innerHTML = transactionChoice[i].value + " ORDER";
-      document.getElementById("transactionCurrentSharesTitle1").innerHTML = "Current Shares";
-      document.getElementById("transactionCurrentSharesTitle2").innerHTML = "Adjusted Shares";
-      document.getElementById("transactionCurrentSharesCurrentStocks").innerHTML = <%= totalShares %>;
+        document.getElementById("transactionCurrentSharesTitle1").innerHTML = "Current Shares";
+        document.getElementById("transactionCurrentSharesTitle2").innerHTML = "Adjusted Shares";
+        document.getElementById("transactionCurrentSharesCurrentStocks").innerHTML = <%= totalShares %>;
     }
   }
 </script>
