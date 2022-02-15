@@ -1,84 +1,88 @@
 <%- include("partials/header") -%>
 
-<div style="width:30%; ">
-  <form action="/transaction" method="post">
-    <table class="table transaction-table-orderdetails">
-      <thead>
-        <tr>
-          <th colspan="2">ORDER DETAILS</th>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col" style="width:30%; ">
+      <form action="/transaction" method="post">
+        <table class="table transaction-table-orderdetails">
+          <thead>
+            <tr>
+              <th colspan="2">ORDER DETAILS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Transaction</th>
+              <td style="text-transform: uppercase;">
+                <!-- Buy Option -->
+                <div style="display: inline;">
+                  <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()">
+                  <label for="transaction-buy">Buy</label>
+                </div>
+                <!-- Sell Option -->
+                <div style="display: inline;">
+                  <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()">
+                  <label for="transaction-buy">Sell</label>
+                </div>
+              </td>
+            </tr>
+            <!-- Stock Code -->
+            <tr>
+              <th scope="row">Stock Code</th>
+              <td> <input style="text-transform: uppercase;" type="text" value="<%=stockCode%>" name="transactionStockCode"
+                  id="transactionStockCode" autocomplete="off" required /></td>
+            </tr>
+            <!-- Market Price -->
+            <tr>
+              <th scope="row">Market Price</th>
+              <td> <input type="text" name="transactionMarketPrice"
+                  id="transactionMarketPrice" autocomplete="off" required /></td>
+            </tr>
+            <!-- # of shares -->
+            <tr>
+              <th scope="row"># of shares</th>
+              <td><input type="text" name="transactionNumOfShares" id="transactionNumOfShares" onChange="onChange()"
+                  autocomplete="off" required /></td>
+            </tr>
+            <!-- Price -->
+            <tr>
+              <th scope="row">Price</th>
+              <td><input type="text" name="transactionPrice" id="transactionPrice" onChange="onChange()" autocomplete="off"
+                  required /></td>
+            </tr>
+            <tr>
+              <th scope="row">Net</th>
+              <td id="transactionTotalPrice">0</td>
+            </tr>
+          </tbody>
+        </table>
+        <a href="/home"><button type="button submit" class="btn btn-dark">Submit Transaction</button></a>
+      </form>
+    </div>
+    
+    <!-- Show existing Stocks: -->
+    <div class="col" style="width:20%;">
+      <table id="tableTransactionCurrentShares" class="table tableTransactionCurrentShares" style="display: none;">
+        <thead>
+          <tr>
+            <th colspan=" 2" id="transactionTransactionChoice" scope="row">
+        </th>
         </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">Transaction</th>
-          <td style="text-transform: uppercase;">
-            <!-- Buy Option -->
-            <div style="display: inline;">
-              <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()">
-              <label for="transaction-buy">Buy</label>
-            </div>
-            <!-- Sell Option -->
-            <div style="display: inline;">
-              <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()">
-              <label for="transaction-buy">Sell</label>
-            </div>
-          </td>
-        </tr>
-        <!-- Stock Code -->
-        <tr>
-          <th scope="row">Stock Code</th>
-          <td> <input style="text-transform: uppercase;" type="text" value="<%=stockCode%>" name="transactionStockCode"
-              id="transactionStockCode" autocomplete="off" required /></td>
-        </tr>
-        <!-- Market Price -->
-        <tr>
-          <th scope="row">Market Price</th>
-          <td> <input type="text" name="transactionMarketPrice"
-              id="transactionMarketPrice" autocomplete="off" required /></td>
-        </tr>
-        <!-- # of shares -->
-        <tr>
-          <th scope="row"># of shares</th>
-          <td><input type="text" name="transactionNumOfShares" id="transactionNumOfShares" onChange="onChange()"
-              autocomplete="off" required /></td>
-        </tr>
-        <!-- Price -->
-        <tr>
-          <th scope="row">Price</th>
-          <td><input type="text" name="transactionPrice" id="transactionPrice" onChange="onChange()" autocomplete="off"
-              required /></td>
-        </tr>
-        <tr>
-          <th scope="row">Net</th>
-          <td id="transactionTotalPrice">0</td>
-        </tr>
-      </tbody>
-    </table>
-    <a href="/home"><button type="button submit" class="btn btn-dark">Submit Transaction</button></a>
-  </form>
+        </thead>
+        <tbody>
+          <tr>
+            <th id="transactionCurrentSharesTitle1" scope="row"></th>
+            <td id="transactionCurrentSharesCurrentStocks"></td>
+          </tr>
+          <tr>
+            <th id="transactionCurrentSharesTitle2" scope="row"></th>
+            <td id="transactionCurrentSharesAdjustedStocks"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<!-- Show existing Stocks: -->
-<div style="width:20%;">
-  <table id="tableTransactionCurrentShares" class="table tableTransactionCurrentShares">
-    <thead>
-      <tr>
-        <th colspan=" 2" id="transactionTransactionChoice" scope="row">
-    </th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th id="transactionCurrentSharesTitle1" scope="row"></th>
-        <td id="transactionCurrentSharesCurrentStocks"></td>
-      </tr>
-      <tr>
-        <th id="transactionCurrentSharesTitle2" scope="row"></th>
-        <td id="transactionCurrentSharesAdjustedStocks"></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 
 <script>
   function onChange() {
@@ -109,7 +113,7 @@
   }
 
   function onClick() {
-    // document.getElementById("tableTransactionCurrentShares").style.display="";
+    document.getElementById("tableTransactionCurrentShares").style.display="";
     //Clear values
     document.getElementById("transactionCurrentSharesAdjustedStocks").innerHTML = 0
     document.getElementById("transactionNumOfShares").value = ""

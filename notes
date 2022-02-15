@@ -1,14 +1,9 @@
-To-Do:
--Account DB
--When Selling, they will choose bet. existing stocks.. (pop up? or new page?)
 
--If may existing stock sa /transaction, display info (existing: # of stocks, ) *
--Display capital
 Gain/Loss Computation: (Purchase/Sell Price - Original Price) / Purchase or Sell Price Price *100
 
 Goal:
 With Chart of progress..
-with log in..
+
 json file of stock names... (stock name, board lot)
 Add shares to current trades
   Infos:
@@ -19,14 +14,10 @@ Add shares to current trades
 Onlu number is allowed for input in # of shares, price, etc. ...
 User will choose a transaction first, if buy, show yung mga input, else, choose bet. existing stocks
 green if + red if - buy/sell
-encrypt pw..
-username only lowercase
 auto suggest sa /transaction pag nag enter ng code..
-kapag mali yung username, go back sa /home
-To Do Today: 
--Set up form for submit sa computation
 
 
---
-ISSUE:
-kapag wrong password nag sstop yung run
+2/16 Todo
+encrypt pw.. *
+username only lowercase *
+
