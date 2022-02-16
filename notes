@@ -5,19 +5,10 @@ Goal:
 With Chart of progress..
 
 json file of stock names... (stock name, board lot)
-Add shares to current trades
-  Infos:
-    1. Stock Code
-    2. # of current shares
-    3. Purchase price
-    4.
-Onlu number is allowed for input in # of shares, price, etc. ...
 User will choose a transaction first, if buy, show yung mga input, else, choose bet. existing stocks
-green if + red if - buy/sell
+green if + red if - buy/sell *
 auto suggest sa /transaction pag nag enter ng code..
+transaction:
+  ask to confirm order.. *
 
-
-2/16 Todo
-encrypt pw.. *
-username only lowercase *
 
