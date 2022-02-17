@@ -19,6 +19,7 @@ app.use(express.static("public"));
 var today = new Date();
 var date = today.toLocaleString('default', { month: 'long' }) + ' ' + today.getDate() + ' '+ today.getFullYear() + ', ' + today.getHours() + ":" + today.getMinutes();
 let loginUsername =""
+let loginPassword =""
 //Initializing mongoose
 mongoose.connect('mongodb://localhost:27017/InvestmentDB');
 
@@ -98,9 +99,10 @@ app.post("/home", function(req, res) {
   let glMonetary = parseFloat((totalPrice/100)*glPercentage).toFixed(2)
 
   //User Login
-  loginUsername = req.body.loginUsername;
-  let loginPassword = req.body.loginPassword
-  
+  //kapag not null si loginUsername, nakapag log in na.. loginUsername = stockCode == undefined ? req.body.loginUsername : loginUsername
+  loginUsername = stockCode == undefined ? req.body.loginUsername : loginUsername
+  // let loginPassword = req.body.loginPassword
+  loginPassword = stockCode == undefined ? req.body.loginPassword : loginPassword
   //User create
   const createUserPw = req.body.loginCreatePassword
   const createUserUsername = req.body.loginCreateUsername
@@ -118,7 +120,8 @@ app.post("/home", function(req, res) {
                 account.stocks.map((accountStock) => {
                   finalPrice = finalPrice + accountStock.totalPrice
                   finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
-                  finalGLMonetary = finalGLMonetary + accountStock.glMonetary;  
+                  finalGLMonetary = finalGLMonetary + accountStock.glMonetary; 
+                  
                 });
                 
                 finalCapital = account.capital - finalPrice;
@@ -137,6 +140,7 @@ app.post("/home", function(req, res) {
                finalGLMonetary: finalGLMonetary,
                finalCapital: finalCapital,
                loginUsername: loginUsername
+              
                });
   
             } //stock code undefined
@@ -229,7 +233,7 @@ app.post("/home", function(req, res) {
             }
           }//password correct
           else{
-            console.log("Incorrect password.");
+          console.log("Incorrect password.");
           res.redirect("/login")
           }
         });
@@ -260,7 +264,6 @@ app.post("/home", function(req, res) {
         });
       }
       else{
-        console.log("User not found!");
         res.redirect("/login")
       }
     }//err find one
@@ -372,7 +375,10 @@ app.get("/login", function(req,res){
 const testArrayObject =[{"abc": 123, "def": 456, "ghi": 789}, {"abc": 1234, "def": 5678, "ghi": 9012}]
 
 app.get("/test", function(req,res) {
-  res.render("test.ejs")
+  const testmodal = ''
+  res.render("test.ejs", {
+    testmodal: testmodal
+  });
   // Account.find({}, function(err, accountItem){
   //   // res.render("test.ejs", 
   //   // {testArray: accountItem.stocks})
@@ -410,6 +416,11 @@ const Test = new mongoose.model("Test", testSchema);
 app.post("/test", function(req,res){
   const pw = req.body.loginPassword
   const loginUsername = req.body.loginUsername
+  const testmodal =  req.body.testmodal
+
+  res.render("test.ejs",{
+    testmodal: testmodal
+  });
   // Test.findOne({username: loginUsername}, function(err, accountFoundStock){
   //   if (!err){
   //     if(accountFoundStock == undefined){
@@ -431,20 +442,20 @@ app.post("/test", function(req,res){
   //   }
 
   // });
-  Test.findOne({username: loginUsername}, function (err, accountFound){
-    if(!err){
-      if(accountFound != undefined){
-        bcrypt.compare(pw, accountFound.password, function(err, result) {
-          if (result){
-            console.log("Password matched!");
-          }
-          else{
-            console.log("Incorrect")
-          }
-      });
-      }
-    }
-  });
+  // Test.findOne({username: loginUsername}, function (err, accountFound){
+  //   if(!err){
+  //     if(accountFound != undefined){
+  //       bcrypt.compare(pw, accountFound.password, function(err, result) {
+  //         if (result){
+  //           console.log("Password matched!");
+  //         }
+  //         else{
+  //           console.log("Incorrect")
+  //         }
+  //     });
+  //     }
+  //   }
+  // });
 });
 // end test area
 

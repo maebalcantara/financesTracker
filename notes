@@ -5,10 +5,14 @@ Goal:
 With Chart of progress..
 
 json file of stock names... (stock name, board lot)
-User will choose a transaction first, if buy, show yung mga input, else, choose bet. existing stocks
 green if + red if - buy/sell *
 auto suggest sa /transaction pag nag enter ng code..
 transaction:
   ask to confirm order.. *
 
 
+home:
+portfolio, history = nav nav-tabs
+
+2/18:
+Buy/Sell function from /home
