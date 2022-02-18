@@ -5,14 +5,13 @@ Goal:
 With Chart of progress..
 
 json file of stock names... (stock name, board lot)
-green if + red if - buy/sell *
 auto suggest sa /transaction pag nag enter ng code..
 transaction:
-  ask to confirm order.. *
+like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file
 
 
 home:
 portfolio, history = nav nav-tabs
 
-2/18:
-Buy/Sell function from /home
+2/19:
+home: buy/sell order table (curr/adjusted shares)

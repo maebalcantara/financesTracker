@@ -25,7 +25,7 @@
           <% let styleColor = value.glMonetary >= 0 ? 'green' : 'red' %>
           <tr>
             <td>
-              <form action="/transaction" method="post">
+              <form action="/home" method="post">
                 <!-- Buy -->
                 <button class="button-buy" type="submit" value="<%=value.stockCode%>" name="sellStockCode">BUY </button> |
                 <!-- Sell -->
@@ -99,7 +99,7 @@
               <label for="stockCode"> <strong>Stock Code:</strong></label>
             </div>
             <div class="col-8">
-              <input style="text-transform: uppercase;" type="text" id="stockCode" name="stockCode" autocomplete="off" required /> 
+              <input style="text-transform: uppercase;" type="text" id="stockCode" name="stockCode" value="<%=stockCode%>" autocomplete="off" required /> 
             </div>
           </div>
 
@@ -129,7 +129,7 @@
               <label for="totalShares"> <strong>Total Shares:</strong></label>
             </div>
             <div class="col-8">
-              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
+              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" value="<%=totalShares%>" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
             </div>
           </div>
       
@@ -141,6 +141,18 @@
             <div class="col-8">
               <span id="totalPrice">0</span>
             </div>
+          </div>
+          
+          <!-- To-do 2/19: add curr/adjusted shares -->
+          <div class="row" style="display: none;">
+            <table>
+              <tr>
+                <td>Test 1</td>
+                <td>Test 1</td>
+                <td>Test 1</td>
+              </tr>
+  
+            </table>
           </div>
           
           <!-- <button id="buyAndSellButton" type="submit" >Enter Info</button> -->
@@ -175,7 +187,7 @@
   </div>
 </div>
 
-<a href="/login"><button class="btn btn-primary" onclick="logOut()">Log out</button></a>
+<a href="/login"><button class="btn btn-primary">Log out</button></a>
 <script>
   // Get Calculation
   function onChange() {
@@ -191,18 +203,6 @@
     document.getElementById("marketPriceModal").innerHTML = marketPrice;
     document.getElementById("purchasePriceModal").innerHTML = marketPrice;
     document.getElementById("totalSharesModal").innerHTML = marketPrice;
-  }
-
-  function onClick(){
-    if (confirm("Press a button!")) {
-      txt = "You pressed OK!";
-    } else {
-      txt = "You pressed Cancel!";
-    }
-  }
-
-  function logOut() {
-    
   }
 
   function onlyNumberKey(evt) {
