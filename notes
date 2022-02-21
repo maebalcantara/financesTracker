@@ -8,10 +8,17 @@ json file of stock names... (stock name, board lot)
 auto suggest sa /transaction pag nag enter ng code..
 transaction:
 like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file
-
+when selling/buying
+    selling: verify if stock available is > than ibebenta; bawal mag sell if walang existing stock; kapag wala na natirang shares, erase na from table..
+    buying: see if amount doesn't exceed capital;
 
 home:
 portfolio, history = nav nav-tabs
 
 2/19:
-home: buy/sell order table (curr/adjusted shares)
+
+//  if(transactionChoice.includes("BUY")){
+                 //   finalPrice = finalPrice + accountStock.totalPrice
+                 //   finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+                 //   finalGLMonetary = finalGLMonetary + accountStock.glMonetary;
+                 //  }

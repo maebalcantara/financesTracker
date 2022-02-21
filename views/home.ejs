@@ -84,12 +84,12 @@
         <div class="container-fluid">
           <!-- Buy Option -->
           <div style="display: inline;">
-            <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY">
+            <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()">
             <label for="transaction-buy">Buy</label>
           </div>
           <!-- Sell Option -->
           <div style="display: inline;">
-            <input type="radio" id="transactionSell" name="transactionChoice" value="SELL">
+            <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()">
             <label for="transaction-buy">Sell</label>
           </div>
 
@@ -129,7 +129,7 @@
               <label for="totalShares"> <strong>Total Shares:</strong></label>
             </div>
             <div class="col-8">
-              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" value="<%=totalShares%>" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
+              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
             </div>
           </div>
       
@@ -139,26 +139,36 @@
               <strong>Total Price: </strong>
             </div>
             <div class="col-8">
-              <span id="totalPrice">0</span>
+              <input type="text" name="totalPrice" id="totalPrice" disabled/>
+              <!-- <span name="totalPrice" id="totalPrice">0</span> -->
             </div>
           </div>
-          
-          <!-- To-do 2/19: add curr/adjusted shares -->
-          <div class="row" style="display: none;">
-            <table>
-              <tr>
-                <td>Test 1</td>
-                <td>Test 1</td>
-                <td>Test 1</td>
+      
+          <div class="row">
+            <table id="tableTransactionCurrentShares" class="table tableTransactionCurrentShares" style="display: none;">
+              <thead>
+                <tr>
+                  <th colspan=" 2" id="transactionTransactionChoice" scope="row">
+              </th>
               </tr>
-  
+              </thead>
+              <tbody>
+                <tr>
+                  <th id="transactionCurrentSharesTitle1" scope="row"></th>
+                  <td id="transactionCurrentSharesCurrentStocks"></td>
+                </tr>
+                <tr>
+                  <th id="transactionCurrentSharesTitle2" scope="row"></th>
+                  <td id="transactionCurrentSharesAdjustedStocks"></td>
+                </tr>
+              </tbody>
             </table>
           </div>
-          
           <!-- <button id="buyAndSellButton" type="submit" >Enter Info</button> -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
             Submit Transaction
           </button>
+          
           <!-- Start of Modal -->
           <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -197,12 +207,12 @@
     var marketPrice = document.getElementById("marketPrice").value;
 
     var total = price * stocks;
-    document.getElementById("totalPrice").innerHTML = total;
+    document.getElementById("totalPrice").value = total;
     //Modal Output
-    document.getElementById("stockCodeModal").innerHTML = marketPrice;
+    document.getElementById("stockCodeModal").innerHTML = stockCode;
     document.getElementById("marketPriceModal").innerHTML = marketPrice;
-    document.getElementById("purchasePriceModal").innerHTML = marketPrice;
-    document.getElementById("totalSharesModal").innerHTML = marketPrice;
+    document.getElementById("purchasePriceModal").innerHTML = price;
+    document.getElementById("totalSharesModal").innerHTML = stocks;
   }
 
   function onlyNumberKey(evt) {
@@ -211,6 +221,27 @@
     if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
       return false;
       return true;
+  }
+
+  function onClick(){
+    document.getElementById("tableTransactionCurrentShares").style.display="";
+    
+    //Clear values
+    document.getElementById("transactionCurrentSharesAdjustedStocks").innerHTML = 0
+    document.getElementById("totalShares").value = ""
+    document.getElementById("purchasePrice").value = ""
+    document.getElementById("marketPrice").value = ""
+    document.getElementById("totalPrice").value = 0
+
+
+    var transactionChoice = document.getElementsByName('transactionChoice');
+    for (i = 0; i < transactionChoice.length; i++) {
+      if (transactionChoice[i].checked)
+        document.getElementById("transactionTransactionChoice").innerHTML = transactionChoice[i].value + " ORDER";
+        document.getElementById("transactionCurrentSharesTitle1").innerHTML = "Current Shares";
+        document.getElementById("transactionCurrentSharesTitle2").innerHTML = "Adjusted Shares";
+        document.getElementById("transactionCurrentSharesCurrentStocks").innerHTML = "<%=totalShares%>";
+    }
   }
 </script>
 
