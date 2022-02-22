@@ -26,6 +26,7 @@
           <tr>
             <td>
               <form action="/home" method="post">
+                <!-- counter? -->
                 <!-- Buy -->
                 <button class="button-buy" type="submit" value="<%=value.stockCode%>" name="sellStockCode">BUY </button> |
                 <!-- Sell -->
@@ -84,12 +85,12 @@
         <div class="container-fluid">
           <!-- Buy Option -->
           <div style="display: inline;">
-            <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()">
+            <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()" required>
             <label for="transaction-buy">Buy</label>
           </div>
           <!-- Sell Option -->
           <div style="display: inline;">
-            <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()">
+            <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()" required>
             <label for="transaction-buy">Sell</label>
           </div>
 
@@ -109,7 +110,7 @@
               <label for="marketPrice"> <strong>Market Price:</strong></label>
             </div>
             <div class="col-8">
-              <input type="text" name="marketPrice" id="marketPrice" onChange="onChange()" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
+              <input type="text" name="marketPrice" id="marketPrice" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" required />
             </div>
           </div>
            <!-- Purchase Price -->
@@ -119,7 +120,7 @@
               <label for="purchasePrice"> <strong>Purchase Price:</strong></label>
             </div>
             <div class="col-8">
-              <input type="text" name="purchasePrice" id="purchasePrice" onChange="onChange()" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
+              <input type="text" name="purchasePrice" id="purchasePrice" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" required />
             </div>
           </div>
 
@@ -129,7 +130,7 @@
               <label for="totalShares"> <strong>Total Shares:</strong></label>
             </div>
             <div class="col-8">
-              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" onkeypress="return onlyNumberKey(event)"autocomplete="off" required />
+              <input type="text" name="totalShares" id="totalShares" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" required />
             </div>
           </div>
       
@@ -139,8 +140,8 @@
               <strong>Total Price: </strong>
             </div>
             <div class="col-8">
-              <input type="text" name="totalPrice" id="totalPrice" disabled/>
-              <!-- <span name="totalPrice" id="totalPrice">0</span> -->
+              <!-- <input type="text" name="totalPrice" id="totalPrice" disabled/> -->
+              <span name="totalPrice" id="totalPrice">0</span>
             </div>
           </div>
       
@@ -207,7 +208,7 @@
     var marketPrice = document.getElementById("marketPrice").value;
 
     var total = price * stocks;
-    document.getElementById("totalPrice").value = total;
+    document.getElementById("totalPrice").innerHTML = total;
     //Modal Output
     document.getElementById("stockCodeModal").innerHTML = stockCode;
     document.getElementById("marketPriceModal").innerHTML = marketPrice;
@@ -222,7 +223,17 @@
       return false;
       return true;
   }
-
+  
+  var validNumber = new RegExp(/^\d*\.?\d*$/);
+    var lastValid = document.getElementById("test1").value;
+    function validateNumber(elem) {
+      if (validNumber.test(elem.value)) {
+        lastValid = elem.value;
+      } else {
+        elem.value = lastValid;
+      }
+    }
+    
   function onClick(){
     document.getElementById("tableTransactionCurrentShares").style.display="";
     
@@ -231,7 +242,7 @@
     document.getElementById("totalShares").value = ""
     document.getElementById("purchasePrice").value = ""
     document.getElementById("marketPrice").value = ""
-    document.getElementById("totalPrice").value = 0
+    document.getElementById("totalPrice").innerHTML = 0
 
 
     var transactionChoice = document.getElementsByName('transactionChoice');

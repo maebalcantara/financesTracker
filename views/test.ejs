@@ -1,6 +1,6 @@
 <%- include("partials/header") -%>
 <form method="post" action="/test">
-    <input id="testmodal" name="testmodal" type="tel" size="50%" onkeypress="return onlyNumberKey(event)" onchange="onChange()" />
+    <input id="testmodal" name="testmodal" type="tel" size="50%" oninput="validateNumber(this);" onchange="onChange()" />
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
         Submit Transaction
     </button>
@@ -31,6 +31,16 @@
   
   
 <script>
+    var validNumber = new RegExp(/^\d*\.?\d*$/);
+    var lastValid = document.getElementById("test1").value;
+    function validateNumber(elem) {
+      if (validNumber.test(elem.value)) {
+        lastValid = elem.value;
+      } else {
+        elem.value = lastValid;
+      }
+    }
+    
     function onlyNumberKey(evt) {
           
         // Only ASCII character in that range allowed
