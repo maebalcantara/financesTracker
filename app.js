@@ -84,24 +84,33 @@ app.get("/home", function(req, res) {
       });
     }
     else{
-      accountFoundStock.stocks.map((accountStock) => {
-        finalPrice = finalPrice + accountStock.totalPrice
-        finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
-        finalGLMonetary = finalGLMonetary + accountStock.glMonetary; 
+      accountFoundStock.stocks.map((accountStock, index) => {
+        if(accountStock.totalShares == 0){
+          accountFoundStock.stocks.splice(index, 1); 
+          accountFoundStock.save();
+          res.redirect("/home");
+        }
+        else{
+          finalPrice = finalPrice + accountStock.totalPrice
+          finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+          finalGLMonetary = finalGLMonetary + accountStock.glMonetary; 
+        }     
       });
-      
-      res.render("home.ejs", {
-        loginUsername: loginUsername,
-        loginPassword: loginPassword,
-        stockEntryLoop: accountFoundStock.stocks,
-        historyEntryLoop: accountFoundStock.history,
-        finalPrice: finalPrice,
-        finalGLPercentage : finalGLPercentage,
-        finalGLMonetary: finalGLMonetary,
-        finalCapital: accountFoundStock.capital,
-        stockCode: '',
-        totalShares: ''
-      });
+
+      if (finalPrice != 0){
+        res.render("home.ejs", {
+          loginUsername: loginUsername,
+          loginPassword: loginPassword,
+          stockEntryLoop: accountFoundStock.stocks,
+          historyEntryLoop: accountFoundStock.history,
+          finalPrice: finalPrice,
+          finalGLPercentage : finalGLPercentage,
+          finalGLMonetary: finalGLMonetary,
+          finalCapital: accountFoundStock.capital,
+          stockCode: '',
+          totalShares: ''
+        });
+      }  
     }   
   });
 });
@@ -188,66 +197,112 @@ app.post("/home", function(req, res) {
             //stockCode not undefined
             else if(stockCode != undefined){
               const foundStock = account.stocks.find(stock => stock.stockCode === stockCode);
+              const transactionChoice = req.body.transactionChoice;
               //Filter if stock is not found.
               if (!foundStock){
-                
-                const stock = ({
-                  stockCode: stockCode,
-                  marketPrice: marketPrice,
-                  purchasePrice: purchasePrice,
-                  totalShares: totalSharesVar,
-                  totalPrice: totalPrice,
-                  glPercentage: glPercentage,
-                  glMonetary: glMonetary
-                });
-                account.stocks.push(stock);
-                
-                const history = ({
-                  datePosted: date,
-                  stockCode: stockCode,
-                  action: 'Buy',
-                  quantity: totalSharesVar,
-                  price: purchasePrice,
-                  total: totalPrice
-                });
-                account.history.push(history);
-                account.save();
-             
-                account.stocks.map((accountStock) => {
-                  finalPrice = finalPrice + accountStock.totalPrice
-                  finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
-                  finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
-                });
-                finalCapital = account.capital - finalPrice;
-                
-                Account.updateOne({username: loginUsername}, {'$set' : {capital: finalCapital}}, function(err){
-                });
-
-                res.render("home.ejs", {
-                  stockEntryLoop: account.stocks,
-                  historyEntryLoop: account.history,
-                  finalPrice: finalPrice,
-                  finalGLPercentage : finalGLPercentage,
-                  finalGLMonetary: finalGLMonetary,
-                  finalCapital: finalCapital,
-                  loginUsername: loginUsername,
-                  loginPassword: loginPassword,
-                  stockCode: '',
-                  totalShares: ''
-                });
+                if(transactionChoice.includes("BUY")){
+                  if(totalPrice < account.capital){
+                    const stock = ({
+                      stockCode: stockCode,
+                      marketPrice: marketPrice,
+                      purchasePrice: purchasePrice,
+                      totalShares: totalSharesVar,
+                      totalPrice: totalPrice,
+                      glPercentage: glPercentage,
+                      glMonetary: glMonetary
+                    });
+                    account.stocks.push(stock);
+                    
+                    const history = ({
+                      datePosted: date,
+                      stockCode: stockCode,
+                      action: 'Buy',
+                      quantity: totalSharesVar,
+                      price: purchasePrice,
+                      total: totalPrice
+                    });
+                    account.history.push(history);
+                    account.save();
+                 
+                    account.stocks.map((accountStock) => {
+                      finalPrice = finalPrice + accountStock.totalPrice
+                      finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+                      finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
+                    });
+                    finalCapital = account.capital - finalPrice;
+                    
+                    Account.updateOne({username: loginUsername}, {'$set' : {capital: finalCapital}}, function(err){
+                    });
+    
+                    res.render("home.ejs", {
+                      stockEntryLoop: account.stocks,
+                      historyEntryLoop: account.history,
+                      finalPrice: finalPrice,
+                      finalGLPercentage : finalGLPercentage,
+                      finalGLMonetary: finalGLMonetary,
+                      finalCapital: finalCapital,
+                      loginUsername: loginUsername,
+                      loginPassword: loginPassword,
+                      stockCode: '',
+                      totalShares: ''
+                    });
+                  }
+                  else{
+                    console.log("Insufficient funds.")
+                    //render home
+                    account.stocks.map((accountStock) => {
+                      finalPrice = finalPrice + accountStock.totalPrice
+                      finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+                      finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
+                    });
+                    
+                    res.render("home.ejs", {
+                      stockEntryLoop: account.stocks,
+                      historyEntryLoop: account.history,
+                      finalPrice: finalPrice,
+                      finalGLPercentage : finalGLPercentage,
+                      finalGLMonetary: finalGLMonetary,
+                      finalCapital: account.capital,
+                      loginUsername: loginUsername,
+                      loginPassword: loginPassword,
+                      stockCode: '',
+                      totalShares: ''
+                    });
+                  }
+                }
+                else{
+                  console.log("Selling not allowed.")
+                  //render home
+                  account.stocks.map((accountStock) => {
+                    finalPrice = finalPrice + accountStock.totalPrice
+                    finalGLPercentage = finalGLPercentage + accountStock.glPercentage;
+                    finalGLMonetary = finalGLMonetary + accountStock.glMonetary;         
+                  });
+                  
+                  res.render("home.ejs", {
+                    stockEntryLoop: account.stocks,
+                    historyEntryLoop: account.history,
+                    finalPrice: finalPrice,
+                    finalGLPercentage : finalGLPercentage,
+                    finalGLMonetary: finalGLMonetary,
+                    finalCapital: account.capital,
+                    loginUsername: loginUsername,
+                    loginPassword: loginPassword,
+                    stockCode: '',
+                    totalShares: ''
+                  });
+                }
               }
               //Filter if stock is found.
               else{
                 const foundStock = account.stocks.find(stock => stock.stockCode == stockCode);
-                const transactionChoice = req.body.transactionChoice;
-
+                
                 currentMarketPrice = parseFloat(foundStock.marketPrice);
                 currentPurchasePrice = parseFloat(foundStock.purchasePrice);
                 currentTotalShares = parseFloat(foundStock.totalShares);
                 currentTotalPrice = parseFloat(foundStock.totalPrice);
 
                 //Transaction computation
-                //to-do 2/23: total price is dapat yung consolidated price + new price ..
                 if (transactionChoice.includes("BUY")){
                   if(totalPrice < account.capital){
                     console.log("Buy success.")
@@ -257,17 +312,29 @@ app.post("/home", function(req, res) {
                   }
                   else{
                     console.log("Request exceeds current capital.")
+                    newTotalShares =  currentTotalShares
+                    newMarketPrice =  currentMarketPrice
+                    newPurchasePrice = currentPurchasePrice
                   }
+                  finalPrice = parseFloat(totalPrice + foundStock.totalPrice).toFixed(2);
+                  finalGLPercentagePrice = parseFloat(foundStock.glPercentage + glPercentage).toFixed(2)
+                  finalGLMonetary = parseFloat(foundStock.glMonetary + glMonetary).toFixed(2)
                 }
                 else if(transactionChoice.includes("SELL")){
-                  if(totalSharesVar < foundStock.totalShares ){
+                  if(totalSharesVar <= foundStock.totalShares ){
                     newTotalShares = currentTotalShares - totalSharesVar;
-                    newMarketPrice = currentMarketPrice - marketPrice;
-                    newPurchasePrice = currentPurchasePrice - purchasePrice;
+                    newMarketPrice =  marketPrice;
+                    newPurchasePrice =  purchasePrice;
                   }
                   else{
                     console.log("Request exceeds current shares.")
+                    newTotalShares =  currentTotalShares
+                    newMarketPrice =  currentMarketPrice
+                    newPurchasePrice = currentPurchasePrice
                   }
+                  finalPrice = parseFloat(foundStock.totalPrice -totalPrice).toFixed(2);
+                  finalGLPercentagePrice = parseFloat(foundStock.glPercentage - glPercentage).toFixed(2)
+                  finalGLMonetary = parseFloat(foundStock.glMonetary - glMonetary).toFixed(2)
                 }      
                 action = transactionChoice.includes("BUY") ? 'Append-Buy' : 'Append-Sell'
                 //Update History table
@@ -282,9 +349,6 @@ app.post("/home", function(req, res) {
                 account.history.push(history);
              
                 finalCapital = account.capital - totalPrice;
-                finalPrice = parseFloat(totalPrice + foundStock.totalPrice).toFixed(2);
-                finalGLPercentagePrice = parseFloat(foundStock.glPercentage + glPercentage).toFixed(2)
-                finalGLMonetary = parseFloat(foundStock.glMonetary + glMonetary).toFixed(2)
 
                 Account.updateOne({username: loginUsername, "stocks.stockCode" : stockCode}, {'$set' : {capital: finalCapital, 'stocks.$.totalShares' : newTotalShares, 'stocks.$.purchasePrice' : newPurchasePrice, 'stocks.$.marketPrice' : newMarketPrice, 'stocks.$.totalPrice' : finalPrice, 'stocks.$.glPercentage' : finalGLPercentagePrice, 'stocks.$.glMonetary' : finalGLMonetary}}, function(err){
                 });

@@ -5,20 +5,16 @@ Goal:
 With Chart of progress..
 
 json file of stock names... (stock name, board lot)
-auto suggest sa /transaction pag nag enter ng code..
+
 transaction:
 like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file
-when selling/buying
-    to-do 2/23
-    selling: verify if stock available is > than ibebenta; bawal mag sell if walang existing stock; kapag wala na natirang shares, erase na from table..
-    buying: see if amount doesn't exceed capital;
-alert if success / failed transaction.. (ejs?)
-formula ng gain/loss .. and sell (kung gain/loss: + capital)
+
+alert if success / failed transaction.. (ejs?) ** to do 2/24
 pag click ng buy/sell sa left, automatic na macchoose yung radio button sa right..
 clickable nalang si stock code? wala nang action? 
+
 home:
 portfolio, history = nav nav-tabs
 
-2/23:
-capitalize stock code modal, 2 decimal sa total price.
+
 

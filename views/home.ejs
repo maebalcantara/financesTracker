@@ -179,7 +179,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">   
-                  <strong>Stock Code: </strong><span id="stockCodeModal"></span> <br/>
+                  <strong>Stock Code: </strong><span id="stockCodeModal" style="text-transform: uppercase;"></span> <br/>
                   <strong>Market Price: </strong><span id="marketPriceModal"></span>  <br/>
                   <strong>Purchase Price: </strong><span id="purchasePriceModal"></span>  <br/>
                   <strong>Total Shares: </strong><span id="totalSharesModal"></span>  <br/>
@@ -204,7 +204,7 @@
   function onChange() {
     var stockCode = document.getElementById("stockCode").value;
     var price = document.getElementById("purchasePrice").value;
-    var stocks = document.getElementById("totalShares").value;
+    var stocks = parseFloat(document.getElementById("totalShares").value).toFixed(2);
     var marketPrice = document.getElementById("marketPrice").value;
 
     var total = price * stocks;
