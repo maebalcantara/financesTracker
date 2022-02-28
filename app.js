@@ -201,6 +201,7 @@ app.post("/home", function(req, res) {
               //Filter if stock is not found.
               if (!foundStock){
                 if(transactionChoice.includes("BUY")){
+                  //add alert pop up
                   if(totalPrice < account.capital){
                     const stock = ({
                       stockCode: stockCode,
@@ -496,16 +497,15 @@ app.post("/transaction", function(req,res){
 //Log in
 app.get("/login", function(req,res){
   res.render("login.ejs")
+  //set condition for pop up?
 });
 
-// test area
-const testArrayObject =[{"abc": 123, "def": 456, "ghi": 789}, {"abc": 1234, "def": 5678, "ghi": 9012}]
-
+//test area
 app.get("/test", function(req,res) {
-  const testmodal = ''
-  res.render("test.ejs", {
-    testmodal: testmodal
-  });
+  // const testmodal = ''
+  // res.render("test.ejs", {
+  //   testmodal: testmodal
+  // });
   // Account.find({}, function(err, accountItem){
   //   // res.render("test.ejs", 
   //   // {testArray: accountItem.stocks})
@@ -531,6 +531,7 @@ app.get("/test", function(req,res) {
   //   stocks: stocks
   // });
   // account.save();
+  res.render("test2.ejs")
 });
 
 const testSchema = new mongoose.Schema({
@@ -541,13 +542,13 @@ const testSchema = new mongoose.Schema({
 const Test = new mongoose.model("Test", testSchema);
 
 app.post("/test", function(req,res){
-  const pw = req.body.loginPassword
-  const loginUsername = req.body.loginUsername
-  const testmodal =  req.body.testmodal
+  // const pw = req.body.loginPassword
+  // const loginUsername = req.body.loginUsername
+  // const testmodal =  req.body.testmodal
 
-  res.render("test.ejs",{
-    testmodal: testmodal
-  });
+  // res.render("test.ejs",{
+  //   testmodal: testmodal
+  // });
   // Test.findOne({username: loginUsername}, function(err, accountFoundStock){
   //   if (!err){
   //     if(accountFoundStock == undefined){
@@ -583,6 +584,12 @@ app.post("/test", function(req,res){
   //     }
   //   }
   // });
+  const testpopup=req.body.popuptext
+  res.render("test2.ejs",{
+    testpopup:testpopup,
+    message: 'test from app.js',
+    type:'danger'
+  })
 });
 // end test area
 

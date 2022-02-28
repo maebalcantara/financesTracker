@@ -6,13 +6,6 @@ table, th, td {
   border: 1px solid black;
 }
 /* CLASSES */
-.div-history{
-
-}
-
-.div-buy{
-
-}
 
 .button-buy{
   border:none;
@@ -26,5 +19,9 @@ table, th, td {
   background:
   none; color:red;
   display: inline;
+}
+
+.tabs-style{
+  color: pink;
 }
 /* ID */

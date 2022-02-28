@@ -1,4 +1,6 @@
 <%- include("partials/header") -%>
+<!-- test for pop up -->
+<div id="liveAlertPlaceholder"></div>
 
 <label for="sampleCapital"><strong>Current Captital:</strong></label>
 <span><%=finalCapital%></span>
@@ -198,8 +200,33 @@
   </div>
 </div>
 
+<!-- <form action="/test" method="post">
+  <input type="text" name="popuptext" placeholder="test"/>
+   <button type="submit" id="testButtonClose" >Test pop up</button>
+</form>
+   -->
 <a href="/login"><button class="btn btn-primary">Log out</button></a>
 <script>
+   // This block is for pop up alerts
+    var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+    var alertTrigger = document.getElementById('testButtonClose')
+    var messageTest = ""
+    var typeTest =""
+    function alert(message, type) {
+      var wrapper = document.createElement('div')
+      wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' + message + '<button type="button" class="btn-close"   data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    
+      alertPlaceholder.append(wrapper)
+    }
+    
+    if (alertTrigger){ 
+        alertTrigger.addEventListener('click', function () {
+        alert(document.getElementById("testButtonClose").innerHTML == 'Close' && 'Closed', document.getElementById("testButtonClose").innerHTML == 'Close' && 'danger')
+        })
+        
+  }
+    //End pop up alerts
+
   // Get Calculation
   function onChange() {
     var stockCode = document.getElementById("stockCode").value;
