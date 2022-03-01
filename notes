@@ -4,19 +4,15 @@ Gain/Loss Computation: (Purchase/Sell Price - Original Price) / Purchase or Sell
 Goal:
 With Chart of progress..
 
-json file of stock names... (stock name, board lot)
-
-transaction:
-like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file
-
-alert if success / failed transaction.. (ejs?)
-pag click ng buy/sell sa left, automatic na macchoose yung radio button sa right..
+alert if success / failed transaction.. (ejs?)(Not applicable na?)
+pag click ng buy/sell sa left, automatic na macchoose yung radio button sa right.. (optional, kasi ddrop down ko na yung stocks..)
 clickable nalang si stock code? wala nang action? 
 
 input validator..
 floating labels ..
 
-to-do 3/1 (wtf march na bukas?)
-    -apply test codes to actual codes
+to-do 3/2 (wtf march na bukas?)
+json file of stock names... (stock name, board lot) * 3/2
 
-
+transaction:
+like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file * 3/2
