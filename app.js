@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+//json stock
+const data = require('./stocks.json');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -80,7 +83,8 @@ app.get("/home", function(req, res) {
         finalGLMonetary: finalGLMonetary,
         finalCapital: accountFoundStock.capital,
         stockCode: '',
-        totalShares: 0
+        totalShares: 0,
+        data: JSON.stringify(data)
       });
     }
     else{
@@ -108,7 +112,8 @@ app.get("/home", function(req, res) {
           finalGLMonetary: finalGLMonetary,
           finalCapital: accountFoundStock.capital,
           stockCode: '',
-          totalShares: ''
+          totalShares: '',
+          data: JSON.stringify(data)
         });
       }  
     }   
@@ -164,7 +169,8 @@ app.post("/home", function(req, res) {
                   finalGLMonetary: finalGLMonetary,
                   finalCapital: account.capital,
                   stockCode: '',
-                  totalShares: ''
+                  totalShares: '',
+                  data: JSON.stringify(data)
                 });
   
             } //sellStockCode not undefined
@@ -190,7 +196,8 @@ app.post("/home", function(req, res) {
                  finalGLMonetary: finalGLMonetary,
                  finalCapital: account.capital,
                  stockCode: foundStock.stockCode,
-                 totalShares: foundStock.totalShares
+                 totalShares: foundStock.totalShares,
+                 data: JSON.stringify(data)
                });
             }
             //Enter info Transaction
@@ -245,7 +252,8 @@ app.post("/home", function(req, res) {
                       loginUsername: loginUsername,
                       loginPassword: loginPassword,
                       stockCode: '',
-                      totalShares: ''
+                      totalShares: '',
+                      data: JSON.stringify(data)
                     });
                   }
                   else{
@@ -267,7 +275,8 @@ app.post("/home", function(req, res) {
                       loginUsername: loginUsername,
                       loginPassword: loginPassword,
                       stockCode: '',
-                      totalShares: ''
+                      totalShares: '',
+                      data: JSON.stringify(data)
                     });
                   }
                 }
@@ -290,7 +299,8 @@ app.post("/home", function(req, res) {
                     loginUsername: loginUsername,
                     loginPassword: loginPassword,
                     stockCode: '',
-                    totalShares: ''
+                    totalShares: '',
+                    data: JSON.stringify(data)
                   });
                 }
               }
@@ -502,6 +512,25 @@ app.get("/login", function(req,res){
 
 //test area
 app.get("/test", function(req,res) {
+
+//   const stocksDBschema = new mongoose.Schema({
+//   stockCode: String,
+//   name: String,
+//   marketPrice: Number,
+//   boardLot: Number
+// });
+
+// const StockInfo = new mongoose.model("StockInfo", stocksDBschema);
+
+// StockInfo.find({})
+// const stock = new StockInfo({
+//   stockCode: 'MAE',
+//   name: 'Mae Alcantara',
+//   marketPrice: 50,
+//   boardLot: 10
+// });
+
+// stock.save();
   // const testmodal = ''
   // res.render("test.ejs", {
   //   testmodal: testmodal
@@ -531,7 +560,10 @@ app.get("/test", function(req,res) {
   //   stocks: stocks
   // });
   // account.save();
-  res.render("test2.ejs")
+  
+  // console.log(data); 
+  res.render("test2.ejs", 
+    {data: JSON.stringify(data)})
 });
 
 const testSchema = new mongoose.Schema({

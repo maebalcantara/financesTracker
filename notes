@@ -11,8 +11,6 @@ clickable nalang si stock code? wala nang action?
 input validator..
 floating labels ..
 
-to-do 3/2 (wtf march na bukas?)
-json file of stock names... (stock name, board lot) * 3/2
-
-transaction:
-like investagrams: naka dropdown yung mga stocks ... applicable dito yung json file * 3/2
+3/8 to do
+check if total shares are by board lot.. 
+kapag cnlick yung total shares, llabas ung existing shares on hand .. (same logic ng dropdown?)
