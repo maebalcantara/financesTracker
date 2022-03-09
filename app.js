@@ -84,7 +84,8 @@ app.get("/home", function(req, res) {
         finalCapital: accountFoundStock.capital,
         stockCode: '',
         totalShares: 0,
-        data: JSON.stringify(data)
+        data: JSON.stringify(data),
+        stocks: JSON.stringify(accountFoundStock.stocks)
       });
     }
     else{
@@ -113,7 +114,8 @@ app.get("/home", function(req, res) {
           finalCapital: accountFoundStock.capital,
           stockCode: '',
           totalShares: '',
-          data: JSON.stringify(data)
+          data: JSON.stringify(data),
+          stocks: JSON.stringify(accountFoundStock.stocks)
         });
       }  
     }   
@@ -170,7 +172,8 @@ app.post("/home", function(req, res) {
                   finalCapital: account.capital,
                   stockCode: '',
                   totalShares: '',
-                  data: JSON.stringify(data)
+                  data: JSON.stringify(data),
+                  stocks: JSON.stringify(account.stocks)
                 });
   
             } //sellStockCode not undefined
@@ -197,7 +200,8 @@ app.post("/home", function(req, res) {
                  finalCapital: account.capital,
                  stockCode: foundStock.stockCode,
                  totalShares: foundStock.totalShares,
-                 data: JSON.stringify(data)
+                 data: JSON.stringify(data),
+                 stocks: JSON.stringify(account.stocks)
                });
             }
             //Enter info Transaction
@@ -253,7 +257,8 @@ app.post("/home", function(req, res) {
                       loginPassword: loginPassword,
                       stockCode: '',
                       totalShares: '',
-                      data: JSON.stringify(data)
+                      data: JSON.stringify(data),
+                      stocks: JSON.stringify(account.stocks)
                     });
                   }
                   else{
@@ -276,7 +281,8 @@ app.post("/home", function(req, res) {
                       loginPassword: loginPassword,
                       stockCode: '',
                       totalShares: '',
-                      data: JSON.stringify(data)
+                      data: JSON.stringify(data),
+                      stocks: JSON.stringify(account.stocks)
                     });
                   }
                 }
@@ -300,7 +306,8 @@ app.post("/home", function(req, res) {
                     loginPassword: loginPassword,
                     stockCode: '',
                     totalShares: '',
-                    data: JSON.stringify(data)
+                    data: JSON.stringify(data),
+                    stocks: JSON.stringify(account.stocks)
                   });
                 }
               }
@@ -562,8 +569,13 @@ app.get("/test", function(req,res) {
   // account.save();
   
   // console.log(data); 
-  res.render("test2.ejs", 
-    {data: JSON.stringify(data)})
+  Account.findOne({username: "mae"}, function (err, accountFoundStock){
+
+    res.render("test2.ejs", 
+    {data: JSON.stringify(data),
+    stocks: JSON.stringify(accountFoundStock.stocks)})
+  })
+  
 });
 
 const testSchema = new mongoose.Schema({

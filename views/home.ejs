@@ -118,74 +118,108 @@
         <h3>Buy and Sell</h3>
         <form action="/home" method="post">
           <div class="container-fluid">
-            <!-- Put dropdown here -->
             <% var arrayStocks = JSON.parse(data) %>
-            <select id="stocksDropdown" onchange="dropdownOnChange(this.value)">
+            <select id="stocksDropdown" onchange="onChangeDropDown(this.value)">
              <% arrayStocks.forEach((value,index) => { %>
                 <option value="<%=index%>" ><%= value.name%></option>  
              <% }) %>
             </select> <br />
             <!-- Buy Option -->
             <div style="display: inline;">
-              <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="onClick()" required>
+              <input type="radio" id="transactionBuy" name="transactionChoice" value="BUY" onclick="transactionOnClick()" required>
               <label for="transaction-buy">Buy</label>
             </div>
             <!-- Sell Option -->
             <div style="display: inline;">
-              <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="onClick()" required>
+              <input type="radio" id="transactionSell" name="transactionChoice" value="SELL" onclick="transactionOnClick()" required>
               <label for="transaction-buy">Sell</label>
             </div>
   
             <!-- Stock Code -->
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-4">
                 <label for="stockCode"> <strong>Stock Code:</strong></label>
               </div>
               <div class="col-8">
                 <input style="text-transform: uppercase; border-style:none" type="text" id="stockCode" name="stockCode" value="<%=stockCode%>" autocomplete="off" readonly /> 
               </div>
+            </div> -->
+ 
+            <div class="row">
+              <div class="col-4">
+                <label for="stockCodeDD"> <strong>Stock Code:</strong></label>
+              </div>
+              <div class="col-8">
+                <input style="border-style:none; text-transform: uppercase" type="text" id="stockCodeDD" name="stockCodeDD" disabled /> 
+              </div>
             </div>
 
             <!-- Stock Name -->
             <div class="row">
               <div class="col-4">
-                <label for="stockName"> <strong>Stock Name:</strong></label>
+                <label for="stockNameDD"> <strong>Stock Name:</strong></label>
               </div>
               <div class="col-8">
-                <input style="border-style:none" type="text" id="stockName" name="stockName" value="" autocomplete="off" readonly /> 
+                <input style="border-style:none" type="text" id="stockNameDD" name="stockNameDD" disabled /> 
               </div>
             </div>
 
             <!-- Board Lot -->
             <div class="row">
               <div class="col-4">
-                <label for="boardLot"> <strong>Board Lot:</strong></label>
+                <label for="boardLotDD"> <strong>Board Lot:</strong></label>
               </div>
               <div class="col-8">
-                <input style="border-style:none" type="text" id="boardLot" name="boardLot" value="" autocomplete="off" readonly /> 
+                <input style="border-style:none" type="text" id="boardLotDD" name="boardLotDD" disabled /> 
               </div>
             </div>
 
             <!-- Market Price -->
             <div class="row">
               <div class="col-4">
-                <label for="marketPrice"> <strong>Market Price:</strong></label>
+                <label for="marketPriceDD"> <strong>Market Price:</strong></label>
               </div>
               <div class="col-8">
-                <input style="border-style:none" type="text" name="marketPrice" id="marketPrice" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" readonly />
+                <input style="border-style:none" type="text" name="marketPriceDD" id="marketPriceDD" disabled />
               </div>
             </div>
-            <div class="border-top border-3 my-2"></div>
-            <!-- Number of Shares -->
+
+            <!-- mae added current shares -->
             <div class="row">
               <div class="col-4">
-                <label for="totalShares"> <strong>Total Shares:</strong></label>
+                <label for="currentShares"> <strong>Current Shares:</strong></label>
               </div>
               <div class="col-8">
-                <input type="text" name="totalShares" id="totalShares" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" />
+                <input style="border-style:none" type="text" name="currentShares" id="currentShares" disabled />
               </div>
             </div>
-            
+
+            <!-- gawing isang div? then naka display none until mag choose sa dropdown? -->
+            <div class="border-top border-3 my-2"></div>
+
+            <div id="transactionsHiddenDiv"  style="display: none;">
+              <!-- mae - added buttons + and - -->
+            <div class="row">
+              <div class="col-2">
+                <button type="button" class="buttonAdd btn btn-primary" id="subtractShares" onclick="computeOnClick(this.id)"></button>
+              </div>
+              <div class="col-8" >
+                <strong># of shares:  </strong><input type="text" id="numOfShares" value="0" disabled/>
+              </div>
+              <div class="col-2">
+                <button type="button" class="buttonAdd btn btn-primary" id="addShares" onclick="computeOnClick(this.id)"></button>
+              </div>
+              <!-- Number of Shares -->
+              <!-- <div class="row">
+                <div class="col-4">
+                  <label for="totalShares"> <strong>Total Shares:</strong></label>
+                </div>
+                <div class="col-8">
+                  <input type="text" name="totalShares" id="totalShares" onChange="onChange()" oninput="validateNumber(this);" autocomplete="off" />
+                </div>
+              </div> -->
+              
+            </div>
             <!-- Purchase Price -->
             <div class="row">
               <div class="col-4">
@@ -231,6 +265,8 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
               Submit Transaction
             </button>
+            </div>
+            
             
             <!-- Start of Modal -->
             <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
@@ -262,14 +298,45 @@
   <a href="/login"><button class="btn btn-primary">Log out</button></a>
 </div>
 <script type="text/javascript">
-  //Drop Down
-  function dropdownOnChange(index){
+  //Drop Down w/ DB
+  function onChangeDropDown(index){
+    document.getElementById("transactionsHiddenDiv").style.display=""
+    // alert(index)
     const stocksData = JSON.parse('<%-data%>')
-    
-    document.getElementById("stockCode").value = stocksData[index].stockCode
-    document.getElementById("stockName").value = stocksData[index].name
-    document.getElementById("boardLot").value = stocksData[index].boardLot
-    document.getElementById("marketPrice").value = stocksData[index].marketPrice
+    const stocksDB = JSON.parse('<%-stocks%>')
+    // alert(stocksDB[0].stockCode)
+    document.getElementById("stockCodeDD").value = stocksData[index].stockCode
+    document.getElementById("stockNameDD").value = stocksData[index].name
+    document.getElementById("boardLotDD").value = stocksData[index].boardLot
+    document.getElementById("marketPriceDD").value = stocksData[index].marketPrice
+
+    document.getElementById("numOfShares").value = 0
+    document.getElementById("currentShares").value = 0
+    // button
+    document.getElementById("subtractShares").innerHTML = "-" + stocksData[index].boardLot
+    document.getElementById("addShares").innerHTML = "+" + stocksData[index].boardLot
+
+    stocksDB.map((value) => {
+      if(value.stockCode == stocksData[index].stockCode){
+        document.getElementById("currentShares").value = value.totalShares
+      }
+    });
+  }
+
+  function computeOnClick(id){
+    var numofShares = parseInt(document.getElementById("numOfShares").value)
+    var boardLot = parseInt(document.getElementById("boardLotDD").value)
+    if(id == 'subtractShares'){
+      if(numofShares > 0){
+      numofShares -= boardLot
+      } 
+    }
+    else if(id == 'addShares'){
+      if(numofShares => 0){
+      numofShares += boardLot
+      } 
+    }
+    document.getElementById("numOfShares").value = numofShares 
   }
 
   //Data Table
@@ -303,13 +370,15 @@
 
   // Get Calculation
   function onChange() {
-    var stockCode = document.getElementById("stockCode").value;
+    
+    var stockCode = document.getElementById("stockCodeDD").value;
+    var marketPrice = document.getElementById("marketPriceDD").value;
     var price = document.getElementById("purchasePrice").value;
-    var stocks = parseFloat(document.getElementById("totalShares").value).toFixed(2);
-    var marketPrice = document.getElementById("marketPrice").value;
+    var stocks = document.getElementById("numOfShares").value;
 
     var total = price * stocks;
     document.getElementById("totalPrice").innerHTML = total;
+
     //Modal Output
     document.getElementById("stockCodeModal").innerHTML = stockCode;
     document.getElementById("marketPriceModal").innerHTML = marketPrice;
@@ -337,8 +406,8 @@
     }
     
   
-  function onClick(){
-    document.getElementById("tableTransactionCurrentShares").style.display="";
+  function transactionOnClick(){
+    // document.getElementById("tableTransactionCurrentShares").style.display="";
     
     //Clear values
     document.getElementById("transactionCurrentSharesAdjustedStocks").innerHTML = 0

@@ -11,6 +11,9 @@ clickable nalang si stock code? wala nang action?
 input validator..
 floating labels ..
 
-3/8 to do
-check if total shares are by board lot.. 
-kapag cnlick yung total shares, llabas ung existing shares on hand .. (same logic ng dropdown?)
+
+alisin buy| sell?
+
+3/10
+total shares would automatically be subtracted kapag may existing total shares and not exceeding ..
+buy/sell fix
