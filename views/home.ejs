@@ -120,8 +120,9 @@
           <div class="container-fluid">
             <% var arrayStocks = JSON.parse(data) %>
             <select id="stocksDropdown" onchange="onChangeDropDown(this.value)">
+              <option value="default">--Choose a stock--</option>
              <% arrayStocks.forEach((value,index) => { %>
-                <option value="<%=index%>" ><%= value.name%></option>  
+              <option value="<%=index%>" ><%= value.name%></option>  
              <% }) %>
             </select> <br />
             <!-- Buy Option -->
@@ -205,6 +206,7 @@
               </div>
               <div class="col-8" >
                 <strong># of shares:  </strong><input type="text" id="numOfShares" value="0" disabled/>
+                <b style="color: red; display: none;" id="alertNoShares">You don't have enough shares</b>
               </div>
               <div class="col-2">
                 <button type="button" class="buttonAdd btn btn-primary" id="addShares" onclick="computeOnClick(this.id)"></button>
@@ -236,38 +238,15 @@
                 <strong>Total Price: </strong>
               </div>
               <div class="col-8">
-                <!-- <input type="text" name="totalPrice" id="totalPrice" disabled/> -->
                 <span name="totalPrice" id="totalPrice">0</span>
               </div>
             </div>
         
-            <div class="row">
-              <table id="tableTransactionCurrentShares" class="table tableTransactionCurrentShares" style="display: none;">
-                <thead>
-                  <tr>
-                    <th colspan=" 2" id="transactionTransactionChoice" scope="row">
-                </th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th id="transactionCurrentSharesTitle1" scope="row"></th>
-                    <td id="transactionCurrentSharesCurrentStocks"></td>
-                  </tr>
-                  <tr>
-                    <th id="transactionCurrentSharesTitle2" scope="row"></th>
-                    <td id="transactionCurrentSharesAdjustedStocks"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- <button id="buyAndSellButton" type="submit" >Enter Info</button> -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
               Submit Transaction
             </button>
             </div>
-            
-            
+                
             <!-- Start of Modal -->
             <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
@@ -300,18 +279,23 @@
 <script type="text/javascript">
   //Drop Down w/ DB
   function onChangeDropDown(index){
-    document.getElementById("transactionsHiddenDiv").style.display=""
-    // alert(index)
+    
+    document.getElementById("transactionsHiddenDiv").style.display = index == 'default' ?  'none' : '' 
+    
     const stocksData = JSON.parse('<%-data%>')
     const stocksDB = JSON.parse('<%-stocks%>')
     // alert(stocksDB[0].stockCode)
-    document.getElementById("stockCodeDD").value = stocksData[index].stockCode
-    document.getElementById("stockNameDD").value = stocksData[index].name
-    document.getElementById("boardLotDD").value = stocksData[index].boardLot
-    document.getElementById("marketPriceDD").value = stocksData[index].marketPrice
+    document.getElementById("stockCodeDD").value = index == 'default'? '' : stocksData[index].stockCode
+    document.getElementById("stockNameDD").value = index == 'default'? '' : stocksData[index].name
+    document.getElementById("boardLotDD").value = index == 'default'? '' : stocksData[index].boardLot
+    document.getElementById("marketPriceDD").value = index == 'default'? '' : stocksData[index].marketPrice
+    
+    document.getElementById("numOfShares").value = 0
+    document.getElementById("purchasePrice").value = 0
+    document.getElementById("totalPrice").innerHTML = 0
 
     document.getElementById("numOfShares").value = 0
-    document.getElementById("currentShares").value = 0
+    document.getElementById("currentShares").value = index == 'default' ?  '' : '0' 
     // button
     document.getElementById("subtractShares").innerHTML = "-" + stocksData[index].boardLot
     document.getElementById("addShares").innerHTML = "+" + stocksData[index].boardLot
@@ -324,8 +308,13 @@
   }
 
   function computeOnClick(id){
-    var numofShares = parseInt(document.getElementById("numOfShares").value)
-    var boardLot = parseInt(document.getElementById("boardLotDD").value)
+    var numofShares = parseInt(document.getElementById("numOfShares").value);
+    var boardLot = parseInt(document.getElementById("boardLotDD").value);
+    var price = document.getElementById("purchasePrice").value;
+    var transactionChoice = document.querySelector('input[name="transactionChoice"]:checked').value;
+    //Get current shares
+    var currentShares = document.getElementById("currentShares").value
+    
     if(id == 'subtractShares'){
       if(numofShares > 0){
       numofShares -= boardLot
@@ -337,6 +326,21 @@
       } 
     }
     document.getElementById("numOfShares").value = numofShares 
+
+    if(transactionChoice == 'SELL'){
+      if(currentShares <= numofShares){  
+      document.getElementById("addShares").setAttribute("disabled", true)
+      document.getElementById("alertNoShares").style.display=""   
+      }
+      else if(currentShares >= numofShares){    
+        document.getElementById("addShares").removeAttribute("disabled")
+        document.getElementById("alertNoShares").style.display="none"
+      }
+    }
+    
+    //Auto compute
+    var total = parseFloat(price * numofShares).toFixed(2);
+    document.getElementById("totalPrice").innerHTML = total;    
   }
 
   //Data Table
@@ -370,13 +374,12 @@
 
   // Get Calculation
   function onChange() {
-    
     var stockCode = document.getElementById("stockCodeDD").value;
     var marketPrice = document.getElementById("marketPriceDD").value;
     var price = document.getElementById("purchasePrice").value;
     var stocks = document.getElementById("numOfShares").value;
 
-    var total = price * stocks;
+    var total = parseFloat(price * stocks).toFixed(2);
     document.getElementById("totalPrice").innerHTML = total;
 
     //Modal Output
@@ -407,23 +410,13 @@
     
   
   function transactionOnClick(){
-    // document.getElementById("tableTransactionCurrentShares").style.display="";
-    
     //Clear values
-    document.getElementById("transactionCurrentSharesAdjustedStocks").innerHTML = 0
-    document.getElementById("totalShares").value = ""
-    document.getElementById("purchasePrice").value = ""
-    document.getElementById("marketPrice").value = ""
+    document.getElementById("numOfShares").value = 0
+    document.getElementById("purchasePrice").value = 0
     document.getElementById("totalPrice").innerHTML = 0
 
-    var transactionChoice = document.getElementsByName('transactionChoice');
-    for (i = 0; i < transactionChoice.length; i++) {
-      if (transactionChoice[i].checked)
-        document.getElementById("transactionTransactionChoice").innerHTML = transactionChoice[i].value + " ORDER";
-        document.getElementById("transactionCurrentSharesTitle1").innerHTML = "Current Shares";
-        document.getElementById("transactionCurrentSharesTitle2").innerHTML = "Adjusted Shares";
-        document.getElementById("transactionCurrentSharesCurrentStocks").innerHTML = "<%=totalShares%>";
-    }
+    document.getElementById("addShares").removeAttribute("disabled")
+    document.getElementById("alertNoShares").style.display="none"
   }
 
   //Nav Tab
